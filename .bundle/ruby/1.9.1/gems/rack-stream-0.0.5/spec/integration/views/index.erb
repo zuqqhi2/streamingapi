@@ -1,0 +1,37 @@
+<html>
+<head></head>
+<body>
+  <h1>Rack::Stream Sinatra Example</h1>
+
+  <h2>Websocket</h2>
+  <ul id='ws'></ul>
+
+  <h2>EventSource</h2>
+  <ul id='es'></ul>
+
+  <script type='text/javascript' src='/jquery-1.7.2.min.js'></script>
+  <script type='text/javascript'>
+    $(function() {
+      var socket, source, faye;
+
+      function log(id, message) {
+        $('<li>').text(message).appendTo(id);
+      }
+
+      function ws(m) {log('#ws', m)}
+      function es(m) {log('#es', m)}
+      function f(m)  {log('#faye', m)}
+
+      socket = new WebSocket("ws://localhost:8888/");
+      socket.onopen    = function()  {ws('socket opened');}
+      socket.onmessage = function(m) {ws(m.data);}
+      socket.onclose   = function()  {ws('socket closed');}
+
+      source = new EventSource('http://localhost:8888/');
+      source.addEventListener('message', function(e) {
+        es(e.data);
+      });
+    })
+  </script>
+</body>
+</html>
